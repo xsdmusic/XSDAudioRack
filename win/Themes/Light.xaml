@@ -1,0 +1,41 @@
+<ResourceDictionary xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+                    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml">
+
+    <!-- ============ 浅色主题（对应 macOS 系统外观）============ -->
+    <SolidColorBrush x:Key="WinBrush" Color="#ECECEC"/>
+    <SolidColorBrush x:Key="PanelBrush" Color="#FFFFFF"/>
+    <SolidColorBrush x:Key="SideBrush" Color="#ECECEC"/>
+    <SolidColorBrush x:Key="CardBrush" Color="#F1F1F4"/>
+    <SolidColorBrush x:Key="FieldBrush" Color="#FFFFFF"/>
+    <SolidColorBrush x:Key="TextBrush" Color="#1D1D1F"/>
+    <SolidColorBrush x:Key="SecondaryBrush" Color="#8E8E93"/>
+    <SolidColorBrush x:Key="TertiaryBrush" Color="#AEAEB2"/>
+    <SolidColorBrush x:Key="SepBrush" Color="#D6D6DA"/>
+    <SolidColorBrush x:Key="AccentBrush" Color="#0A67F2"/>
+    <SolidColorBrush x:Key="AccentTextBrush" Color="#FFFFFF"/>
+    <SolidColorBrush x:Key="AccentHoverBrush" Color="#2F7FFB"/>
+    <SolidColorBrush x:Key="BrandBrush" Color="#E6801A"/>
+    <SolidColorBrush x:Key="RedBrush" Color="#FF3B30"/>
+    <SolidColorBrush x:Key="GreenBrush" Color="#34C759"/>
+    <SolidColorBrush x:Key="SendBrush" Color="#FBF2E6"/>
+    <SolidColorBrush x:Key="AuxBrush" Color="#F0F8F0"/>
+    <SolidColorBrush x:Key="KnobBrush" Color="#FFFFFF"/>
+    <SolidColorBrush x:Key="HoverBrush" Color="#00000014"/>
+    <SolidColorBrush x:Key="PressedBrush" Color="#00000022"/>
+
+    <!-- 电平表渐变（底→顶：绿绿黄红），横版（左→右） -->
+    <LinearGradientBrush x:Key="MeterVertBrush" StartPoint="0,1" EndPoint="0,0">
+        <GradientStop Color="#22C55E" Offset="0"/>
+        <GradientStop Color="#22C55E" Offset="0.55"/>
+        <GradientStop Color="#EAB308" Offset="0.8"/>
+        <GradientStop Color="#EF4444" Offset="1"/>
+    </LinearGradientBrush>
+    <LinearGradientBrush x:Key="MeterHorizBrush" StartPoint="0,0" EndPoint="1,0">
+        <GradientStop Color="#22C55E" Offset="0"/>
+        <GradientStop Color="#22C55E" Offset="0.55"/>
+        <GradientStop Color="#EAB308" Offset="0.8"/>
+        <GradientStop Color="#EF4444" Offset="1"/>
+    </LinearGradientBrush>
+    <SolidColorBrush x:Key="PeakLineBrush" Color="#1D1D1F"/>
+
+</ResourceDictionary>

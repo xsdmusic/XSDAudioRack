@@ -1,0 +1,37 @@
+# 构建产物
+mac/build/
+build/
+build-*/
+out/
+bin/
+obj/
+dist/
+
+# IDE / 编译器
+.vs/
+.vscode/
+*.user
+xcuserdata/
+DerivedData/
+compile_commands.json
+.cache/
+
+# 系统
+.DS_Store
+Thumbs.db
+
+# 授权/密钥文件——绝不入库
+*.p8
+*.pem
+*.key
+*.pfx
+*.p12
+keys/
+
+# 打包成品
+*.dmg
+*.pkg
+*.exe
+*.msi
+*.deb
+*.zip

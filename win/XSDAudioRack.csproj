@@ -1,0 +1,56 @@
+<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <OutputType>WinExe</OutputType>
+    <TargetFramework>net8.0-windows</TargetFramework>
+    <UseWPF>true</UseWPF>
+    <UseWindowsForms>true</UseWindowsForms>
+    <Nullable>enable</Nullable>
+    <ImplicitUsings>enable</ImplicitUsings>
+    <LangVersion>12</LangVersion>
+    <AssemblyName>XSDAudioRack</AssemblyName>
+    <RootNamespace>XSDAudioRack</RootNamespace>
+    <AllowUnsafeBlocks>true</AllowUnsafeBlocks>
+    <PlatformTarget>x64</PlatformTarget>
+    <SatelliteResourceLanguages>zh-Hans</SatelliteResourceLanguages>
+    <RuntimeIdentifiers>win-x64</RuntimeIdentifiers>
+    <ApplicationIcon>app.ico</ApplicationIcon>
+  </PropertyGroup>
+
+  <!-- 排除 macOS 复制时产生的 ._ 元数据垃圾文件，防止被当成源码编译 -->
+  <ItemGroup>
+    <Compile Remove="**\._*" />
+    <Page Remove="**\._*" />
+    <Resource Remove="**\._*" />
+    <None Remove="**\._*" />
+    <Content Remove="**\._*" />
+  </ItemGroup>
+
+  <!-- NAudio 2.2.1 改为直接引用本地 DLL（libs/），断网机器也能编译，无需 NuGet 还原 -->
+  <ItemGroup>
+    <Reference Include="NAudio"><HintPath>libs\NAudio.dll</HintPath></Reference>
+    <Reference Include="NAudio.Core"><HintPath>libs\NAudio.Core.dll</HintPath></Reference>
+    <Reference Include="NAudio.Asio"><HintPath>libs\NAudio.Asio.dll</HintPath></Reference>
+    <Reference Include="NAudio.Midi"><HintPath>libs\NAudio.Midi.dll</HintPath></Reference>
+    <Reference Include="NAudio.Wasapi"><HintPath>libs\NAudio.Wasapi.dll</HintPath></Reference>
+    <Reference Include="NAudio.WinMM"><HintPath>libs\NAudio.WinMM.dll</HintPath></Reference>
+    <Reference Include="NAudio.WinForms"><HintPath>libs\NAudio.WinForms.dll</HintPath></Reference>
+  </ItemGroup>
+
+  <!-- 付款二维码渲染（与直播助手同款） -->
+  <ItemGroup>
+    <PackageReference Include="QRCoder" Version="1.6.0" />
+  </ItemGroup>
+
+  <!-- WPF 为主、仅 VST3 编辑器用 WinForms：移除 WinForms/Drawing 的隐式全局 using -->
+  <ItemGroup>
+    <Using Remove="System.Windows.Forms" />
+    <Using Remove="System.Drawing" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <Resource Include="QRCode.jpg" />
+    <Resource Include="app.ico" />
+  </ItemGroup>
+
+</Project>
