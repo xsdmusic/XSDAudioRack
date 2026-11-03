@@ -1,0 +1,90 @@
+name: Build Installers
+
+on:
+  workflow_dispatch:
+  push:
+    tags:
+      - 'v*'
+
+permissions:
+  contents: write
+
+jobs:
+  build-windows:
+    runs-on: windows-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Setup .NET 8
+        uses: actions/setup-dotnet@v4
+        with:
+          dotnet-version: '8.0.x'
+
+      - name: Publish single-file exe
+        run: dotnet publish win/XSDAudioRack.csproj -c Release -r win-x64 -p:PublishSingleFile=true -p:SelfContained=true -p:IncludeNativeLibrariesForSelfExtract=true -p:EnableCompressionInSingleFile=true -o win/bin/publish-single
+
+      - name: Rename artifact
+        shell: bash
+        run: |
+          VERSION="${GITHUB_REF_NAME#v}"
+          [[ "${GITHUB_REF_NAME}" == refs/tags/* ]] || VERSION="dev-$(git rev-parse --short HEAD)"
+          cp win/bin/publish-single/XSDAudioRack.exe "XSDAudioRack-windows-x64-${VERSION}.exe"
+          echo "VERSION=${VERSION}" >> "$GITHUB_ENV"
+
+      - name: Upload artifact
+        uses: actions/upload-artifact@v4
+        with:
+          name: windows-installer
+          path: XSDAudioRack-windows-x64-*.exe
+
+  build-macos:
+    runs-on: macos-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Resolve package dependencies
+        run: xcodebuild -project mac/XSDAudioRack.xcodeproj -scheme XSDAudioRack -resolvePackageDependencies
+
+      - name: Build universal app (arm64 + x86_64, unsigned)
+        run: |
+          xcodebuild -project mac/XSDAudioRack.xcodeproj -scheme XSDAudioRack \
+            -configuration Release -derivedDataPath mac/build \
+            ARCHS='arm64 x86_64' ONLY_ACTIVE_ARCH=NO \
+            CODE_SIGNING_ALLOWED=NO CODE_SIGNING_REQUIRED=NO build
+
+      - name: Ad-hoc codesign
+        run: |
+          APP=$(find mac/build/Build/Products/Release -maxdepth 1 -name '*.app' | head -1)
+          codesign --force --deep -s - "$APP"
+          echo "APP_PATH=${APP}" >> "$GITHUB_ENV"
+
+      - name: Create dmg
+        run: |
+          VERSION="${GITHUB_REF_NAME#v}"
+          [[ "${GITHUB_REF_NAME}" == refs/tags/* ]] || VERSION="dev-$(git rev-parse --short HEAD)"
+          DMG="XSDAudioRack-macos-universal-${VERSION}.dmg"
+          hdiutil create -volname XSDAudioRack -srcfolder "$APP_PATH" -ov -format UDZO "$DMG"
+          echo "DMG=${DMG}" >> "$GITHUB_ENV"
+
+      - name: Upload artifact
+        uses: actions/upload-artifact@v4
+        with:
+          name: macos-installer
+          path: XSDAudioRack-macos-universal-*.dmg
+
+  release:
+    if: startsWith(github.ref, 'refs/tags/')
+    needs: [build-windows, build-macos]
+    runs-on: ubuntu-latest
+    steps:
+      - name: Download all artifacts
+        uses: actions/download-artifact@v4
+        with:
+          merge-multiple: true
+          path: dist
+
+      - name: Create GitHub Release
+        uses: softprops/action-gh-release@v2
+        with:
+          files: dist/*
+          generate_release_notes: true
